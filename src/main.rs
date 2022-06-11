@@ -1,4 +1,6 @@
+use std::io::Read;
 use std::net::TcpListener;
+use std::net::TcpStream;
 
 fn main() {
     // binding to a port that is higher than 1023
@@ -7,6 +9,14 @@ fn main() {
     for stream in listener.incoming() {
         let stream = stream.unwrap();
 
-        println!("Connection established!");
+        handle_connection(stream);
     }
+}
+
+fn handle_connection(mut stream: TcpStream) {
+    let mut buffer = [0; 1024];
+
+    stream.read(&mut buffer).unwrap();
+
+    println!("Request: {}", String::from_utf8_lossy(&buffer[..]));
 }
