@@ -1,4 +1,4 @@
-use std::io::Read;
+use std::io::{Read, Write};
 use std::net::TcpListener;
 use std::net::TcpStream;
 
@@ -18,5 +18,12 @@ fn handle_connection(mut stream: TcpStream) {
 
     stream.read(&mut buffer).unwrap();
 
-    println!("Request: {}", String::from_utf8_lossy(&buffer[..]));
+    println!("<= Request: {}", String::from_utf8_lossy(&buffer[..])); // TcpStream in
+
+    let response = "HTTP/1.1 200 OK\r\n\r\n";
+
+    println!("=> Response: {}", response); // TcpStream out
+
+    stream.write(response.as_bytes()).unwrap();
+    stream.flush().unwrap();
 }
