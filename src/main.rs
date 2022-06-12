@@ -1,3 +1,4 @@
+use std::fs;
 use std::io::{Read, Write};
 use std::net::TcpListener;
 use std::net::TcpStream;
@@ -20,7 +21,13 @@ fn handle_connection(mut stream: TcpStream) {
 
     println!("<= Request: {}", String::from_utf8_lossy(&buffer[..])); // TcpStream in
 
-    let response = "HTTP/1.1 200 OK\r\n\r\n";
+    let contents = fs::read_to_string("index.html").unwrap();
+
+    let response = format!(
+        "HTTP/1.1 200 OK\r\nContent-Length: {}\r\n\r\n{}",
+        contents.len(),
+        contents
+    );
 
     println!("=> Response: {}", response); // TcpStream out
 
